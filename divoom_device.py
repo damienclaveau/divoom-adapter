@@ -13,4 +13,4 @@ class DivoomDevice:
 		self.sock.close()
 
 	def send(self, package):
-		self.sock.send(str(bytearray(package)))
+		self.sock.sendall(bytes(bytearray(package)))
