@@ -104,9 +104,9 @@ def scroll_sequence():
 	old_to_new(img_4, img_5, 4)
 
 
-DIVOMM_ADR = sys.argv[1]
+DIVOOM_ADR = sys.argv[1]
 thing = divoom_protocol.DivoomAuraBoxProtocol()
-dev = divoom_device.DivoomDevice(DIVOMM_ADR)
+dev = divoom_device.DivoomDevice(DIVOOM_ADR)
 
 dev.connect()
 
