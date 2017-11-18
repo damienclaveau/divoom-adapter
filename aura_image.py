@@ -43,7 +43,26 @@ def get_aura_color(pixel):
     return PALETTE_AURABOX.get(nearest_color)
 
 
-def convert_image_to_aura(img):
+def replace_colors(img, from_colors, to_colors):
+    if len(from_colors) != len(to_colors):
+        print('number of colors must be same')
+        return img
+
+    copy = img.copy()
+    for from_color, to_color in zip(from_colors, to_colors):
+        copy[copy == from_color] = -(to_color + 1)
+
+    copy[copy < 0] = np.abs(copy[copy < 0]) - 1
+    return copy
+
+
+def replace_white_by_black(img):
+    from_colors = [PALETTE_AURABOX.get('white')]
+    to_colors = [PALETTE_AURABOX.get('black')]
+    return replace_colors(img, from_colors, to_colors)
+
+
+def convert_image_to_aura(img, white_to_black=False):
     img = cv2.resize(img, (WIDTH, HEIGHT), interpolation=cv2.INTER_LINEAR)
     img_int = np.vectorize(int)(img)
     converted_image = np.tile(np.asarray([0]), (HEIGHT, WIDTH, 1))
@@ -52,10 +71,16 @@ def convert_image_to_aura(img):
         for x in range(WIDTH):
             converted_image[y, x] = get_aura_color(img_int[y, x])
 
+    if white_to_black:
+        converted_image = replace_white_by_black(converted_image)
+
     return converted_image
 
 
-def get_image_bytes(img):
+def get_image_bytes(img, white_to_black=False):
+    if white_to_black:
+        img = replace_white_by_black(img)
+
     image_bytes = []
     it = img[:, :, 0].flat
 
